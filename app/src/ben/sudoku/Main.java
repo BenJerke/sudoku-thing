@@ -13,13 +13,13 @@ public class Main {
         boolean keepPlaying = true;
         while (keepPlaying){
             game.printGameGrid();
-            System.out.println("\nWhat square do you want to update?");
-            String key = userInput.nextLine();
-            System.out.println("\nWhat value do you want to put in it?");
-            int proposedValue = Integer.parseInt(userInput.nextLine());
-            game.updateSquareInList(key, proposedValue);
+            System.out.println("\nPick a square and a value. (row, column, number)");
+            String proposedValue = userInput.nextLine();
+            //game.updateIsValid()
+            game.updateSquareInList(proposedValue);
             game.printGameGrid();
-            System.out.println("\nWanna keep playing?");
+            System.out.println("\nKeep playing?");
+
             String input = userInput.nextLine();
             if (!(input.equals("y"))){
                 System.out.println("\nSee ya!");
