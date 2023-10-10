@@ -88,6 +88,10 @@ public class Game {
     }
     public void updateSquareInList (String proposedValue){
         // parse input
+        if (proposedValue.length() != 5){
+            System.out.println("Huh? I'm not sure what you're trying to do. Gimme a row number, column number, and the number you want to put there.");
+            return;
+        }
         int y = Integer.parseInt(proposedValue.charAt(0) + "");
         int x = Integer.parseInt(proposedValue.charAt(2) + "");
         int val = Integer.parseInt(proposedValue.charAt(4) + "");
@@ -98,7 +102,7 @@ public class Game {
             int squareY = square.getYCoordinate();
             if(y == squareY && x == squareX){
                 if(updateIsValid(square, val)){
-                    square.setValue(val); //change this to the update function once she's ready for game time.
+                    square.setValue(val);
                 }
             }
         }
@@ -194,8 +198,4 @@ public class Game {
         }
         return valueList;
     }
-
-
-
-
 }
