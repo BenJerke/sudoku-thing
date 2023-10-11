@@ -1,12 +1,20 @@
 package ben.sudoku;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.lang.Math;
 
 public class Game {
+
+    private int[][] gameGrid;
+    private Stack<int[][]> gameGridHistory;
+
+    public Game(int[][] gameGrid, Stack<int[][]> gameGridHistory) {
+        this.gameGrid = gameGrid;
+        this.gameGridHistory = gameGridHistory;
+    }
+
+    public Game() {
+    }
     // Game state lives here - the grid, move history, all that good stuff.
 
 //    private final static int GRID_SIZE_OFFSET = 1;
@@ -74,20 +82,7 @@ public class Game {
 //            colCount = square.getXCoordinate();
 //        }
 //    }
-//    public void updateSquareInList (String key, int proposedValue){
-//        // parse input
-//        int y = Integer.parseInt(key.charAt(0) + "");
-//        int x = Integer.parseInt(key.charAt(2) + "");
-//        // this is SUPER NOT IDEAL.
-//        // but it is SUPER GOOD ENOUGH.
-//        for (GridSquare square : squares){
-//            int squareX = square.getXCoordinate();
-//            int squareY = square.getYCoordinate();
-//            if(y == squareY && x == squareX){
-//                square.setValue(proposedValue); //change this to the update function once she's ready for game time.
-//            }
-//        }
-//    }
+
 //    public void updateSquareInList (String proposedValue){
 //        // parse input
 //        if (proposedValue.length() != 5){

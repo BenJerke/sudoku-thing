@@ -3,9 +3,11 @@ package ben.sudoku;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class Main {
     public static void main(String[] args) {
-
+        Game newGame = new Game();
+        SudokuFunctions.stub();
 //        Scanner userInput = new Scanner(System.in);
 //        System.out.println("What size of boxes do you want in your grid?");
 //        int gridSize = Integer.parseInt(userInput.nextLine());
