@@ -91,8 +91,8 @@ public final class SudokuFunctions {
         // check each row index for the same input value up to the upper X boundary
         // then move to the next row.
         // stop at the upper Y boundary.
-        for(int rowIndex = lowerYBoundary; rowIndex < upperYBoundary; rowIndex++){
-            for(int columnIndex = lowerXBoundary; columnIndex < upperXBoundary; columnIndex++){
+        for(int rowIndex = lowerYBoundary; rowIndex < upperYBoundary + 1; rowIndex++){
+            for(int columnIndex = lowerXBoundary; columnIndex < upperXBoundary + 1; columnIndex++){
                 int squareValue = gameGrid[rowIndex][columnIndex];
                 if (value == squareValue){
                     return false;
