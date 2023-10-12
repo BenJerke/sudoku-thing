@@ -34,19 +34,6 @@ public class SudokuFunctionsTest {
         valid9x9GameGrid[8] = validRow9;
 
     }
-    @After
-    public void reset_valid_grid(){
-        valid9x9GameGrid[0] = validRow1;
-        valid9x9GameGrid[1] = validRow2;
-        valid9x9GameGrid[2] = validRow3;
-        valid9x9GameGrid[3] = validRow4;
-        valid9x9GameGrid[4] = validRow5;
-        valid9x9GameGrid[5] = validRow6;
-        valid9x9GameGrid[6] = validRow7;
-        valid9x9GameGrid[7] = validRow8;
-        valid9x9GameGrid[8] = validRow9;
-
-    }
 
     @Test
     public void gridDimensionsAreSquare_returns_true_for_square_dimensions(){
@@ -83,7 +70,11 @@ public class SudokuFunctionsTest {
          */
         Assert.assertTrue("Valid row entry flagged.", SudokuFunctions.gridSquareInputValueIsValid(valid9x9GameGrid, 1, 1, 4, SudokuFunctions.setBoundaries(3)));
     }
-
+    @Test
+    public void findBoxMembers_identifies_correct_members(){
+        int [] expectedBoxMembers = {7,8,1,4,9,3,5,6,2};
+        Assert.assertArrayEquals("Incorrect box members.", expectedBoxMembers, SudokuFunctions.findBoxMembers(valid9x9GameGrid, 3,8,2));
+    }
     @Test
     public void gridSquareInputValueIsValid_identifies_invalid_column_members(){
         valid9x9GameGrid[4][6] = 0;
@@ -101,6 +92,8 @@ public class SudokuFunctionsTest {
         valid9x9GameGrid[3][5] = 0;
         Assert.assertTrue("Valid box entry flagged.", SudokuFunctions.gridSquareInputValueIsValid(valid9x9GameGrid, 5, 5, 5, SudokuFunctions.setBoundaries(3)));
     }
+
+
 
 
 

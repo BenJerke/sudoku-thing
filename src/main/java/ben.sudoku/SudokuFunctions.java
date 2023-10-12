@@ -116,5 +116,40 @@ public final class SudokuFunctions {
         return upperBoundary;
     }
 
+    public static int[] findBoxMembers(int[][] gameGrid, int boxSize, int upperXBoundary, int upperYBoundary){
+        int[] boxMembers = new int[gameGrid.length];
+        int lowerXBoundary = upperXBoundary - (boxSize - 1);
+        int lowerYBoundary = upperYBoundary - (boxSize - 1);
+        int i = 0;
+        for(int rowIndex = lowerYBoundary; rowIndex < upperYBoundary + 1; rowIndex++){
+            for(int columnIndex = lowerXBoundary; columnIndex < upperXBoundary + 1; columnIndex++){
+                int squareValue = gameGrid[rowIndex][columnIndex];
+                boxMembers[i] = squareValue;
+                i++;
+            }
+        }
+        return boxMembers;
+    }
+//    private static int getSquarePossibleValueCount(int[][] gameGrid, int xCoordinate, int yCoordinate){
+//        // once we get the count of possible values, we can figure out what they are and stick 'em in an array of the proper length.
+//        // could just use a list, but where's the fun in that?
+//        // count of possible values is equal to the count of non-zero numbers within the box, row, and column; minus the grid dimensions.
+//        // check row:
+//        for(int rowMember : gameGrid[yCoordinate - 1]){
+//            if(rowMember == value){
+//                return false;
+//            }
+//        }
+//        // check column:
+//        for(int[] row : gameGrid){
+//            if(row[xCoordinate - 1] == value){
+//                return false;
+//            }
+//        }
+//
+//        // check box:
+//        //
+//    }
+
 
 }
