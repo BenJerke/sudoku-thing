@@ -70,11 +70,11 @@ public class SudokuFunctionsTest {
          */
         Assert.assertTrue("Valid row entry flagged.", SudokuFunctions.gridSquareInputValueIsValid(valid9x9GameGrid, 1, 1, 4, SudokuFunctions.setBoundaries(3)));
     }
-    @Test
-    public void findBoxMembers_identifies_correct_members(){
-        int [] expectedBoxMembers = {7,8,1,4,9,3,5,6,2};
-        Assert.assertArrayEquals("Incorrect box members.", expectedBoxMembers, SudokuFunctions.findBoxMembers(valid9x9GameGrid, 3,8,2));
-    }
+//    @Test
+//    public void findBoxMembers_identifies_correct_members(){
+//        int [] expectedBoxMembers = {7,8,1,4,9,3,5,6,2};
+//        Assert.assertArrayEquals("Incorrect box members.", expectedBoxMembers, SudokuFunctions.findBoxMembers(valid9x9GameGrid, 3,8,2));
+//    }
     @Test
     public void gridSquareInputValueIsValid_identifies_invalid_column_members(){
         valid9x9GameGrid[4][6] = 0;
@@ -91,6 +91,36 @@ public class SudokuFunctionsTest {
         Assert.assertFalse("Invalid box entry missed.", SudokuFunctions.gridSquareInputValueIsValid(valid9x9GameGrid, 5,5, 5, SudokuFunctions.setBoundaries(3)));
         valid9x9GameGrid[3][5] = 0;
         Assert.assertTrue("Valid box entry flagged.", SudokuFunctions.gridSquareInputValueIsValid(valid9x9GameGrid, 5, 5, 5, SudokuFunctions.setBoundaries(3)));
+    }
+    @Test
+    public void listSquareCandidateValues_identifies_correct_values(){
+        valid9x9GameGrid[6][7] = 0;
+        valid9x9GameGrid[7][4] = 0;
+        valid9x9GameGrid[7][0] = 0;
+        valid9x9GameGrid[3][4] = 0;
+       int[] candidates = SudokuFunctions.listSquareCandidateValues(valid9x9GameGrid, SudokuFunctions.setBoundaries(3), 5, 8);
+       int[] expectedValues = new int[] {5};
+       Assert.assertArrayEquals("incorrect values", expectedValues, candidates);
+    }
+    @Test
+    public void listAllPossibleSquaresAcrossGrid_tracks_possible_values(){
+        valid9x9GameGrid[0][0] = 0;
+        valid9x9GameGrid[8][8] = 0;
+        valid9x9GameGrid[4][4] = 0;
+        valid9x9GameGrid[0][1] = 0;
+        valid9x9GameGrid[0][8] = 0;
+        int[] expectedZeroZero = {4};
+        int[] expectedFourFour = {8};
+        int[] expectedEightEight = {9};
+        int[] expectedZeroOne = {3};
+        int[] expectedZeroEight = {1};
+        int[][][] values = SudokuFunctions.listPossibleValuesPerSquareAcrossGrid(valid9x9GameGrid, SudokuFunctions.setBoundaries(3));
+        Assert.assertArrayEquals("First square values didn't match: " , expectedZeroZero, values[0][0]);
+        Assert.assertArrayEquals("Middle square values didn't match.", expectedFourFour, values[4][4]);
+        Assert.assertArrayEquals("Second square values didn't match.", expectedZeroOne, values[0][1]);
+        Assert.assertArrayEquals("Row end square values didn't match.", expectedZeroEight, values[0][8]);
+        Assert.assertArrayEquals("Final square values didn't match.", expectedEightEight, values[8][8]);
+
     }
 
 

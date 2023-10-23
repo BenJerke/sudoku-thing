@@ -1,10 +1,9 @@
 package ben.sudoku;
 
 
+import java.util.*;
+import java.util.List;
 public final class SudokuFunctions {
-    public static boolean stub(){
-        return true;
-    }
 
     /**
      * If you want to play sudoku, you need a square grid that can be subdivided into smaller square grids of equal size.
@@ -61,42 +60,24 @@ public final class SudokuFunctions {
         }
     }
     public static boolean gridSquareInputValueIsValid(int [][] gameGrid, int xCoordinate, int yCoordinate, int value, int[] boundaries){
-        // Given the current game grid, check if the user-proposed input is valid.
-        // If we check row, column, and box sequentially, we can catch invalid updates without having to search each of them.
-        // This saves a little time.
-
-        // Find the row: the array at our y-coordinate.
-        // Check the row for the same value.
         for(int rowMember : gameGrid[yCoordinate - 1]){
             if(rowMember == value){
                 return false;
             }
         }
-        // Find the column: all values at position x within each array in the grid
-        // Check the column for the same value.
         for(int[] row : gameGrid){
             if(row[xCoordinate - 1] == value){
                 return false;
             }
         }
-        // Find the box: all values for the rows starting at the lower box boundaries on the x and y axes, and ending at the upper box boundaries for the x and y axes.
-        // Get the lower box boundary on the Y axis: the nearest multiple of the square root of gameGrid.length plus one.
-        // Check the box for the same value.
-        int boxSize = (int)Math.sqrt(gameGrid.length + 1);
+        int boxSize = (int)Math.sqrt(gameGrid.length);
         int upperXBoundary = findUpperBoxBoundary(xCoordinate, boxSize, boundaries);
-        int lowerXBoundary = findUpperBoxBoundary(xCoordinate, boxSize, boundaries) - (boxSize - 1);
         int upperYBoundary = findUpperBoxBoundary(yCoordinate, boxSize, boundaries);
-        int lowerYBoundary = findUpperBoxBoundary(yCoordinate, boxSize, boundaries) - (boxSize - 1);
-        // start at the lower Y boundary and lower X boundary.
-        // check each row index for the same input value up to the upper X boundary
-        // then move to the next row.
-        // stop at the upper Y boundary.
-        for(int rowIndex = lowerYBoundary; rowIndex < upperYBoundary + 1; rowIndex++){
-            for(int columnIndex = lowerXBoundary; columnIndex < upperXBoundary + 1; columnIndex++){
-                int squareValue = gameGrid[rowIndex][columnIndex];
-                if (value == squareValue){
-                    return false;
-                }
+        int[] boxMembers = findBoxMembers(gameGrid, boxSize, upperXBoundary, upperYBoundary);
+
+        for(int boxMember : boxMembers){
+            if (boxMember == value){
+                return false;
             }
         }
         return true;
@@ -115,14 +96,32 @@ public final class SudokuFunctions {
         }
         return upperBoundary;
     }
+    public static int[] findRowMembers(int[][] gameGrid, int yCoordinate){
+        int[] rowMembers = new int[gameGrid.length];
+        int i = 0;
+        for(int rowMember : gameGrid[yCoordinate - 1]){
+            rowMembers[i] = rowMember;
+            i++;
+        }
+        return rowMembers;
+    }
 
-    public static int[] findBoxMembers(int[][] gameGrid, int boxSize, int upperXBoundary, int upperYBoundary){
+    public static int[] findColumnMembers(int[][] gameGrid, int xCoordinate){
+
+        int[] columnMembers = new int[gameGrid.length];
+        int i = 0;
+        for (int[] row : gameGrid){
+            columnMembers[i] = row[xCoordinate - 1];
+        }
+        return columnMembers;
+    }
+    private static int[] findBoxMembers(int[][] gameGrid, int boxSize, int upperXBoundary, int upperYBoundary){
         int[] boxMembers = new int[gameGrid.length];
         int lowerXBoundary = upperXBoundary - (boxSize - 1);
         int lowerYBoundary = upperYBoundary - (boxSize - 1);
         int i = 0;
-        for(int rowIndex = lowerYBoundary; rowIndex < upperYBoundary + 1; rowIndex++){
-            for(int columnIndex = lowerXBoundary; columnIndex < upperXBoundary + 1; columnIndex++){
+        for(int rowIndex = lowerYBoundary; rowIndex < upperYBoundary; rowIndex++){
+            for(int columnIndex = lowerXBoundary; columnIndex < upperXBoundary; columnIndex++){
                 int squareValue = gameGrid[rowIndex][columnIndex];
                 boxMembers[i] = squareValue;
                 i++;
@@ -130,26 +129,57 @@ public final class SudokuFunctions {
         }
         return boxMembers;
     }
-//    private static int getSquarePossibleValueCount(int[][] gameGrid, int xCoordinate, int yCoordinate){
-//        // once we get the count of possible values, we can figure out what they are and stick 'em in an array of the proper length.
-//        // could just use a list, but where's the fun in that?
-//        // count of possible values is equal to the count of non-zero numbers within the box, row, and column; minus the grid dimensions.
-//        // check row:
-//        for(int rowMember : gameGrid[yCoordinate - 1]){
-//            if(rowMember == value){
-//                return false;
-//            }
-//        }
-//        // check column:
-//        for(int[] row : gameGrid){
-//            if(row[xCoordinate - 1] == value){
-//                return false;
-//            }
-//        }
-//
-//        // check box:
-//        //
-//    }
+
+    public static int[] listSquareCandidateValues(int[][] gameGrid, int[] boundaries, int xCoordinate, int yCoordinate){
+        List<Integer> possibleValues = new ArrayList<>();
+        if(gameGrid[yCoordinate - 1][xCoordinate - 1] != 0){
+            return new int[] {};
+        }
+        int valueToCheck = 1;
+        for(int i = 0; i < gameGrid.length; i++){
+            if(gridSquareInputValueIsValid(gameGrid, xCoordinate, yCoordinate, valueToCheck, boundaries)){
+                possibleValues.add(valueToCheck);
+            }
+            valueToCheck++;
+        }
+        if(possibleValues.isEmpty()){
+            return new int[] {};
+        }
+        int[] candidates = new int[possibleValues.size()];
+        int i = 0;
+        for(int v : possibleValues) {
+            candidates[i] = v;
+            i++;
+        }
+        Arrays.sort(candidates);
+        return candidates;
+    }
+    public static int[][][] listPossibleValuesPerSquareAcrossGrid(int[][] gameGrid, int[] boundaries){
+        int[][][] gridPossibleValues = new int[gameGrid.length][gameGrid.length][0];
+        for(int xCoordinate = 1; xCoordinate < gameGrid.length + 1; xCoordinate++){
+            for (int yCoordinate = 1; yCoordinate < gameGrid.length + 1; yCoordinate++){
+                gridPossibleValues[yCoordinate - 1][xCoordinate - 1] = listSquareCandidateValues(gameGrid, boundaries, xCoordinate, yCoordinate);
+            }
+        }
+        return gridPossibleValues;
+    }
+    public int[][] generatePuzzle(int dimensions){
+        int[][] gameGrid = new int[dimensions][dimensions];
+        int sqrtDimensions = 0;
+        if(SudokuFunctions.gridDimensionsAreSquare(dimensions)){
+            sqrtDimensions = (int)Math.sqrt(dimensions);
+        } else {
+            return null;
+        }
+
+        int[] boundaries = setBoundaries(sqrtDimensions);
+        Stack<int[][]> gridHistory = new Stack<>();
+        // starting with 1, fill the grid.
+
+
+
+        return gameGrid;
+    }
 
 
 }
