@@ -189,21 +189,42 @@ public final class SudokuFunctions {
         return r;
     }
 
-    private int[] findBestPossibleSquare(int [][][]){
-
+    private int[] findSquareWithFewestCandidateValues(int [][][]gridPossibleValues){
+        // start at the highest possible count.
+        int [] squareCoordinates = new int[2];
+        int lowestCandidateCount = gridPossibleValues.length;
+        int currentSquareCandidateCount;
+        for (int y = 0; y < gridPossibleValues.length; y++){
+            for (int x = 0; x < gridPossibleValues.length; x++){
+                currentSquareCandidateCount = gridPossibleValues[y][x].length;
+                if(currentSquareCandidateCount < lowestCandidateCount){
+                    lowestCandidateCount = currentSquareCandidateCount;
+                    squareCoordinates[0] = y;
+                    squareCoordinates[1] = x;
+                }
+            }
+        }
+        return squareCoordinates;
     }
 
-    private int findBestValueToSet(int[] squarePossibleValues, int[][][] gridPossibleValues){
+    private int findBestValueToSet(int[] coordinateIndices, int[][][] gridPossibleValues){
         // Assuming that the right approach is to go random > least possible values
         // of the values our square could accommodate, which one occurs the least in our grid right now?
+        int yCoordinate = coordinateIndices[0], xCoordinate = coordinateIndices[1];
+        int[] squarePossibleValues = gridPossibleValues[yCoordinate][xCoordinate];
+
         Map<Integer, Integer> digitCounts = new HashMap<>();
         int valueToSet = squarePossibleValues[0];
         if(squarePossibleValues.length == 1){
             return valueToSet;
         }
+
         for (int y = 0; y < gridPossibleValues.length; y++){
             for (int x = 0; x < gridPossibleValues.length; x++){
                 for(int i = 0; i < gridPossibleValues[y][x].length; i++){
+                    if(gridPossibleValues.length == 0){
+                        continue;
+                    }
                     if(digitCounts.get(gridPossibleValues[y][x][i]) == null){
                         digitCounts.put(gridPossibleValues[y][x][i], 1);
                     } else {
@@ -213,7 +234,6 @@ public final class SudokuFunctions {
             }
         }
         // get a count of all the possible values in each
-        
         return valueToSet;
     }
 
