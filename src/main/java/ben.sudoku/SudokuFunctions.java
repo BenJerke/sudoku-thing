@@ -3,6 +3,9 @@ package ben.sudoku;
 
 import java.util.*;
 import java.util.List;
+import java.lang.Math;
+import java.util.concurrent.ThreadLocalRandom;
+
 public final class SudokuFunctions {
 
     /**
@@ -165,7 +168,7 @@ public final class SudokuFunctions {
     }
     public int[][] generatePuzzle(int dimensions){
         int[][] gameGrid = new int[dimensions][dimensions];
-        int sqrtDimensions = 0;
+        int sqrtDimensions;
         if(SudokuFunctions.gridDimensionsAreSquare(dimensions)){
             sqrtDimensions = (int)Math.sqrt(dimensions);
         } else {
@@ -174,12 +177,44 @@ public final class SudokuFunctions {
 
         int[] boundaries = setBoundaries(sqrtDimensions);
         Stack<int[][]> gridHistory = new Stack<>();
-        // starting with 1, fill the grid.
-
 
 
         return gameGrid;
     }
 
+    private int generateNumberBetween1AndGridLength(int dimensions){
+        final int FLOOR = 1;
+        Random rando = new Random();
+        int r = rando.nextInt(dimensions - FLOOR) + FLOOR;
+        return r;
+    }
+
+    private int[] findBestPossibleSquare(int [][][]){
+
+    }
+
+    private int findBestValueToSet(int[] squarePossibleValues, int[][][] gridPossibleValues){
+        // Assuming that the right approach is to go random > least possible values
+        // of the values our square could accommodate, which one occurs the least in our grid right now?
+        Map<Integer, Integer> digitCounts = new HashMap<>();
+        int valueToSet = squarePossibleValues[0];
+        if(squarePossibleValues.length == 1){
+            return valueToSet;
+        }
+        for (int y = 0; y < gridPossibleValues.length; y++){
+            for (int x = 0; x < gridPossibleValues.length; x++){
+                for(int i = 0; i < gridPossibleValues[y][x].length; i++){
+                    if(digitCounts.get(gridPossibleValues[y][x][i]) == null){
+                        digitCounts.put(gridPossibleValues[y][x][i], 1);
+                    } else {
+                        digitCounts.put(gridPossibleValues[y][x][i], digitCounts.get(gridPossibleValues[y][x][i]) + 1);
+                    }
+                }
+            }
+        }
+        // get a count of all the possible values in each
+        
+        return valueToSet;
+    }
 
 }
