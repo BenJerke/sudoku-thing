@@ -21,6 +21,38 @@ public class SudokuFunctionsTest {
     private int[] validRow8 = new int[] {2,4,8,9,5,7,1,3,6};
     private int[] validRow9 = new int[] {7,6,3,4,1,8,2,5,9};
 
+    private String print3DArrayValues(int[][][] threeDimensionalArray){
+        String output = "";
+        int x = 0;
+        int y = 0;
+        for (int[][] squares : threeDimensionalArray){
+            for(int[] valueLists: squares){
+                for (int v : valueLists){
+                    output += v + ", ";
+                }
+                output += "\n";
+            }
+        }
+        return output;
+    }
+    private String print2DArrayValues(int[][] twoDimensionalArray){
+        String output = "";
+        int i = 0;
+        for (int[] row : twoDimensionalArray){
+            for(int value : row){
+                output += value + ", " + i + " - ";
+            }
+            i++;
+        }
+        return output;
+    }
+    private String print1DArrayValues(int[] array){
+        String output = "";
+        for (int v : array){
+            output += v + ", ";
+        }
+        return output;
+    }
     @Before
     public void setup_valid_grid(){
         valid9x9GameGrid[0] = validRow1;
@@ -121,6 +153,28 @@ public class SudokuFunctionsTest {
         Assert.assertArrayEquals("Row end square values didn't match.", expectedZeroEight, values[0][8]);
         Assert.assertArrayEquals("Final square values didn't match.", expectedEightEight, values[8][8]);
 
+    }
+
+    @Test
+    public void findSquareWithFewestPossibleCandidateValues_returns_correct_square_coordinates(){
+        // clear values from 3 squares such that one has 1 candidate, another has 2, and the third has 3.
+        valid9x9GameGrid[0][0] = 0; //s1
+        valid9x9GameGrid[0][1] = 0; //s1 row member
+        valid9x9GameGrid[1][0] = 0; //s1 column member
+        valid9x9GameGrid[2][2] = 0; //s1 box member
+
+        valid9x9GameGrid[8][8] = 0; //s2
+        valid9x9GameGrid[8][1] = 0; //s2 row member, shares column with cleared value
+        valid9x9GameGrid[0][8] = 0; //s2 column member, shares column with cleared value
+        valid9x9GameGrid[7][7] = 0; //s2 box member
+        valid9x9GameGrid[6][7] = 0; //second s2 box member
+        int[] expectedCoordinates = {0,0};
+        int[] actualCoordinates = SudokuFunctions.findSquareWithFewestCandidateValues(SudokuFunctions.listPossibleValuesPerSquareAcrossGrid(valid9x9GameGrid, SudokuFunctions.setBoundaries(3)));
+        Assert.assertArrayEquals("Wrong square selected: " + print1DArrayValues(actualCoordinates) + " vs. " + print1DArrayValues(expectedCoordinates), expectedCoordinates, actualCoordinates);
+    }
+
+    public void findBestValueToSet_returns_correct_value(){
+        
     }
 
 

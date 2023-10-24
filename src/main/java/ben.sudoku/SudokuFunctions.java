@@ -99,7 +99,7 @@ public final class SudokuFunctions {
         }
         return upperBoundary;
     }
-    public static int[] findRowMembers(int[][] gameGrid, int yCoordinate){
+    private static int[] findRowMembers(int[][] gameGrid, int yCoordinate){
         int[] rowMembers = new int[gameGrid.length];
         int i = 0;
         for(int rowMember : gameGrid[yCoordinate - 1]){
@@ -109,7 +109,7 @@ public final class SudokuFunctions {
         return rowMembers;
     }
 
-    public static int[] findColumnMembers(int[][] gameGrid, int xCoordinate){
+    private static int[] findColumnMembers(int[][] gameGrid, int xCoordinate){
 
         int[] columnMembers = new int[gameGrid.length];
         int i = 0;
@@ -189,27 +189,38 @@ public final class SudokuFunctions {
         return r;
     }
 
-    private int[] findSquareWithFewestCandidateValues(int [][][]gridPossibleValues){
+    public static int[] findSquareWithFewestCandidateValues(int [][][]gridPossibleValues){
         // start at the highest possible count.
         int [] squareCoordinates = new int[2];
         int lowestCandidateCount = gridPossibleValues.length;
         int currentSquareCandidateCount;
         for (int y = 0; y < gridPossibleValues.length; y++){
+            if(lowestCandidateCount == 1){
+                break;
+            }
             for (int x = 0; x < gridPossibleValues.length; x++){
+                if(gridPossibleValues[y][x].length == 0){
+                    continue;
+                }
                 currentSquareCandidateCount = gridPossibleValues[y][x].length;
                 if(currentSquareCandidateCount < lowestCandidateCount){
                     lowestCandidateCount = currentSquareCandidateCount;
                     squareCoordinates[0] = y;
                     squareCoordinates[1] = x;
                 }
+                if(lowestCandidateCount == 1){
+                    // lowest possible outcome - break out of both loops and return.
+                    break;
+                }
             }
         }
         return squareCoordinates;
     }
 
-    private int findBestValueToSet(int[] coordinateIndices, int[][][] gridPossibleValues){
+    public int findBestValueToSet(int[] coordinateIndices, int[][][] gridPossibleValues){
         // Assuming that the right approach is to go random > least possible values
         // of the values our square could accommodate, which one occurs the least in our grid right now?
+        // we should never ever ever get an empty square as input.
         int yCoordinate = coordinateIndices[0], xCoordinate = coordinateIndices[1];
         int[] squarePossibleValues = gridPossibleValues[yCoordinate][xCoordinate];
 
@@ -222,7 +233,7 @@ public final class SudokuFunctions {
         for (int y = 0; y < gridPossibleValues.length; y++){
             for (int x = 0; x < gridPossibleValues.length; x++){
                 for(int i = 0; i < gridPossibleValues[y][x].length; i++){
-                    if(gridPossibleValues.length == 0){
+                    if(gridPossibleValues[y][x].length == 0){
                         continue;
                     }
                     if(digitCounts.get(gridPossibleValues[y][x][i]) == null){
@@ -231,6 +242,14 @@ public final class SudokuFunctions {
                         digitCounts.put(gridPossibleValues[y][x][i], digitCounts.get(gridPossibleValues[y][x][i]) + 1);
                     }
                 }
+            }
+        }
+        // starting with the maximum possible count of values, find the least-used value.
+        int fewestValueCount = gridPossibleValues.length * gridPossibleValues.length;
+        for (Map.Entry<Integer, Integer> digitCount : digitCounts.entrySet()){
+            if (digitCount.getValue() < fewestValueCount){
+                fewestValueCount = digitCount.getValue();
+                valueToSet = digitCount.getKey();
             }
         }
         // get a count of all the possible values in each
