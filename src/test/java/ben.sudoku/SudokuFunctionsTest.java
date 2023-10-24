@@ -120,6 +120,7 @@ public class SudokuFunctionsTest {
         // make the row and column valid
         valid9x9GameGrid[4][8] = 0;
         valid9x9GameGrid[7][4] = 0;
+
         Assert.assertFalse("Invalid box entry missed.", SudokuFunctions.gridSquareInputValueIsValid(valid9x9GameGrid, 5,5, 5, SudokuFunctions.setBoundaries(3)));
         valid9x9GameGrid[3][5] = 0;
         Assert.assertTrue("Valid box entry flagged.", SudokuFunctions.gridSquareInputValueIsValid(valid9x9GameGrid, 5, 5, 5, SudokuFunctions.setBoundaries(3)));
@@ -173,8 +174,21 @@ public class SudokuFunctionsTest {
         Assert.assertArrayEquals("Wrong square selected: " + print1DArrayValues(actualCoordinates) + " vs. " + print1DArrayValues(expectedCoordinates), expectedCoordinates, actualCoordinates);
     }
 
+    @Test
     public void findBestValueToSet_returns_correct_value(){
-        
+        valid9x9GameGrid[0][0] = 0; //s1
+        valid9x9GameGrid[0][1] = 0; //s1 row member
+        valid9x9GameGrid[1][0] = 0; //s1 column member
+        valid9x9GameGrid[2][2] = 0; //s1 box member
+
+        valid9x9GameGrid[8][8] = 0; //s2
+        valid9x9GameGrid[8][1] = 0; //s2 row member, shares column with cleared value
+        valid9x9GameGrid[0][8] = 0; //s2 column member, shares column with cleared value
+        valid9x9GameGrid[7][7] = 0; //s2 box member
+        valid9x9GameGrid[6][7] = 0; //second s2 box member
+        int[][][] possibles = SudokuFunctions.listPossibleValuesPerSquareAcrossGrid(valid9x9GameGrid, SudokuFunctions.setBoundaries(3));
+        int[] coordinatesToCheck = new int[] {8,8};
+        Assert.assertEquals(9, SudokuFunctions.findBestValueToSet(coordinatesToCheck, possibles));
     }
 
 

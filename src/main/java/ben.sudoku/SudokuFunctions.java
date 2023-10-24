@@ -120,11 +120,11 @@ public final class SudokuFunctions {
     }
     private static int[] findBoxMembers(int[][] gameGrid, int boxSize, int upperXBoundary, int upperYBoundary){
         int[] boxMembers = new int[gameGrid.length];
-        int lowerXBoundary = upperXBoundary - (boxSize - 1);
-        int lowerYBoundary = upperYBoundary - (boxSize - 1);
+        int lowerXBoundary = upperXBoundary - (boxSize);
+        int lowerYBoundary = upperYBoundary - (boxSize);
         int i = 0;
-        for(int rowIndex = lowerYBoundary; rowIndex < upperYBoundary; rowIndex++){
-            for(int columnIndex = lowerXBoundary; columnIndex < upperXBoundary; columnIndex++){
+        for(int rowIndex = lowerYBoundary + 1; rowIndex <= upperYBoundary; rowIndex++){
+            for(int columnIndex = lowerXBoundary + 1; columnIndex <= upperXBoundary; columnIndex++){
                 int squareValue = gameGrid[rowIndex][columnIndex];
                 boxMembers[i] = squareValue;
                 i++;
@@ -217,7 +217,7 @@ public final class SudokuFunctions {
         return squareCoordinates;
     }
 
-    public int findBestValueToSet(int[] coordinateIndices, int[][][] gridPossibleValues){
+    public static int findBestValueToSet(int[] coordinateIndices, int[][][] gridPossibleValues){
         // Assuming that the right approach is to go random > least possible values
         // of the values our square could accommodate, which one occurs the least in our grid right now?
         // we should never ever ever get an empty square as input.
@@ -232,10 +232,10 @@ public final class SudokuFunctions {
 
         for (int y = 0; y < gridPossibleValues.length; y++){
             for (int x = 0; x < gridPossibleValues.length; x++){
+                if(gridPossibleValues[y][x].length == 0){
+                    continue;
+                }
                 for(int i = 0; i < gridPossibleValues[y][x].length; i++){
-                    if(gridPossibleValues[y][x].length == 0){
-                        continue;
-                    }
                     if(digitCounts.get(gridPossibleValues[y][x][i]) == null){
                         digitCounts.put(gridPossibleValues[y][x][i], 1);
                     } else {
